@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+
+<% include header %> 
+
+<body>
+<div class="container container-fluid">
+  <div class="top-pad3 divit">
+    <div class="row justify-content-center p1">
+        <div class="col-sm-6">
+
+            <h1><span class="fa fa-lock"></span> Forgot Password</h1>
+
+            <% if (message.length > 0) { %>
+                <div class="p1">
+                </div>            
+                <div class="alert alert-danger"><%= message %></div>
+            <% } %>
+
+            <form action="/resetpwd" method="post">
+                <div class="form-group top-pad2">
+                    <label>Enter Your Email Address</label>
+                    <input type="text" class="form-control top-pad3" name="resetemail">
+                </div>
+                <button type="submit" class="btn btn-secondary">Send Reset Link</button>
+            </form>
+        </div>
+    </div>
+    <div class="btm-pad-big"></div>      
+  </div>
+</div>
+</body>
+
+<% include analytics %> 
+
+</html>

@@ -1,0 +1,478 @@
+<!doctype html>
+<html>
+
+<% include header %> 
+
+<body class="darkbg">
+
+    <div class="pjs" id="particles-js"> 
+    </div>
+        <div id="mainblock" class="container">
+            <h1 class="titler titlerlg">Let's Moon</h1>
+            <h3 class="titler">Open Source Trading Engine for Advanced Order Types</h3>
+            <div class="row justify-content-center p1">
+                <div class="col-sm-4">
+                    <img class="moonlogo" src="/public/img/rocket.svg">
+                </div>
+                <div class="left-pad2 right-pad2">
+                </div>                
+                <div class="col-sm-4">
+                    <div class="">
+                        <% if (message.length > 0) { %>
+                            <div class="alert alert-danger"><%= message %></div>
+                        <% } %>
+
+                        <nav class="top-pad4">
+                          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-login-tab" data-toggle="tab" href="#nav-login" role="tab" aria-controls="nav-login" aria-selected="true"><span class="fa fa-sign-in"></span> Login</a>
+                            <a class="nav-item nav-link" id="nav-signup-tab" data-toggle="tab" href="#nav-signup" role="tab" aria-controls="nav-signup" aria-selected="false"><span class="fa fa-user"></span> Signup</a>
+                          </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                          <div class="tab-pane fade show active" id="nav-login" role="tabpanel" aria-labelledby="nav-login-tab">
+                            <div class="top-pad3">
+                                <!-- LOGIN FORM -->
+                                <form action="/login" method="post">
+                                    <div class="form-group">
+                                        <label class="whitetext">Email</label>
+                                        <input type="text" class="form-control" name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="whitetext">Password</label>
+                                        <input type="password" class="form-control" name="password">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-secondary float"><i class="fa fa-sign-in"></i> Login</button>
+                                    <div class="top-pad4">
+                                        <a href="/forgotpassword" class="whitelink"><i class="fa fa-lock"></i> Reset Password</a>
+                                    </div>
+                                </form>
+                            </div>
+                          </div>
+                          <div class="tab-pane fade" id="nav-signup" role="tabpanel" aria-labelledby="nav-signup-tab">
+                            <div class="top-pad3">
+                                <!-- LOGIN FORM -->
+                                <form id="signupform" action="/signup" method="post">
+                                    <div class="form-group">
+                                        <label class="whitetext">Email</label>
+                                        <input type="text" class="form-control" name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="whitetext">Password</label>
+                                        <input type="password" class="form-control" name="password">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-secondary" id="signupbtn"><i class="fa fa-user"></i> Signup</button>
+                                    <div class="top-pad4">
+                                        <a href="/forgotpassword" class="whitelink"><i class="fa fa-lock"></i> Reset Password</a>
+                                    </div>                        
+                                </form>       
+                            </div>               
+                          </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            <div class="row justify-content-center top-pad2">
+                <div class="col-sm-6">
+                    <div class="whitetext top-pad4">       
+                        <h4>Trade on Directly on Bittrex and Binance</h4>
+                        <p>The trading engine lets you configure advanced buy and sell orders and execute them on the exchanges without locking your funds.  We have an exciting roadmap to introduce more advanced features and more exchanges.</p>                    
+                    </div>                    
+                </div>                
+            </div>
+            <div class="row justify-content-center top-pad2">
+                <div class="col-sm-3">
+                    <div class="feature-icon">
+                        <i class="fa fa-shield icon1"></i>
+                    </div>
+                    <div class="whitetext top-pad4">
+                        <h5>Secure</h5>
+                        <p>100% Encrypted. Ethereum Strength Keys. Grant only trade permissions on your exchange API keys</p>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="feature-icon">
+                        <i class="fa fa-github icon1"></i>
+                    </div>             
+                    <div class="whitetext top-pad4">       
+                        <h5>Open Source</h5>
+                        <p>Community Developed. Powered by nodeJS. Pull requests welcome @ our <a class="whitelink" href="https://github.com/letsmoonco/letsmoon" target="_blank">Github</a></p>                    
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="feature-icon">
+                        <i class="fa fa-microchip icon1"></i>
+                    </div>
+                    <div class="whitetext top-pad4">       
+                        <h5>Automation</h5>
+                        <p>Configure your buy/sell targets and let the system execute your orders for you.</p>
+                    </div>                      
+                </div>                                                        
+                <div class="col-sm-3">
+                    <div class="feature-icon">
+                        <i class="fa fa-telegram icon1"></i>
+                    </div>
+                    <div class="whitetext top-pad4">       
+                        <h5>Telegram Channel</h5>
+                        <p><a class="whitelink" href="https://t.me/joinchat/AAAAAEiuI2XJJ8JeV1tgaA" target="_blank">Join the community on Telegram.</a></p>                                          
+                    </div>
+                </div>                                                                        
+            </div> 
+            <div class="row justify-content-center top-pad2">
+                <div class="col-sm-12">
+                    <div class="whitetext top-pad4">       
+                        <h4>Roadmap</h4>
+                        <p>Here's some of the cool stuff we're planning.</p>         
+                          <ul class="timeline">
+                            <li>
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Code Optimizations</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Continue to improve the efficiency and performance of the code.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="timeline-inverted">
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">More Order Types</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>More and advanced order types including market buy/sells, trailing stop loss, icebergs, arbitrage.</p>
+                                </div>
+                              </div>
+                            </li>                            
+                            <li>
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Advanced Indicators</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Trade based on indicators such as RSI, MACD Crossover, SMAs, etc.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="timeline-inverted">
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Sharing Calls</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Share your trades with the community and trade other people's calls.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Exchanges</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>We'll continue to add more exchanges.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="timeline-inverted">
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Notifications</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Pushover notifications to mobile devices.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Mobile Experience</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Improved Mobile Experience & Device Compatability.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li class="timeline-inverted">
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">UX, Styling & Themes</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>Improved User Experience, Styling and Switchable Themes.</p>
+                                </div>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="timeline-badge primary"></div>
+                              <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                  <h5 class="timeline-title">Exchange Order History</h5>
+                                </div>
+                                <div class="timeline-body">
+                                  <p>View order history within our app</p>
+                                </div>
+                              </div>
+                            </li>
+                          </ul>
+
+
+                    </div>                    
+                </div>                
+            </div>            
+            <div class="btm-pad-big"></div>
+        </div>  
+
+
+<div class="modal fade" id="termsModalLong" tabindex="-1" role="dialog" aria-labelledby="termsModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="termsModalLongTitle">Terms & Conditions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+Definitions
+References to "we", "us" or "our" in these Terms of Service are to LETSMOON.CO
+References to "you" or "your" in these Terms of Service are to the users of this website
+References to "the Service" or "LETSMOON" in these Terms of Service are to this website
+References to "Third parties" in these Terms of Service are to organisations who have their data displayed on LETSMOON
+
+
+By using LETSMOON, you agree and consent to the terms and conditions contained in these Terms of Service.
+Terms of service
+1.  The information on this Site has been included in good faith for general informational purposes only. The Service may contain information submitted by a third party including advertisements. The information should not be relied upon for any specific purpose and no representation or warranty is given as to its accuracy or completeness.
+2.  Any opinions (express or implied) are general and not necessarily those of LETSMOON or Third parties.
+3.  Except for any express warranties or undertakings given on the Service, we exclude all warranties (express or implied) in respect of the Service and the content of and your use of the Service.
+4.  We shall not be liable to you for any loss that you suffer (including, without limitation, damages for any consequential loss or loss of business opportunities or projects, or loss of profits) howsoever arising, whether in contract, tort or otherwise from your use or inability to use the Service, or any of its contents, or from any action or omission taken as a result of using the Service provided that nothing in these terms shall exclude or limit our liability for personal injury or death caused by our negligence.
+5.  We may provide links to other websites from time to time. These links are provided for your convenience. We do not endorse or take responsibility for the content of those websites, we are not responsible for the availability of them and will not be liable in any way for any loss or damage which you may suffer by your use or inability to use those websites.
+6.  If you decide to access linked websites you do so at your own risk. If you purchase any goods or services from a third party or third party website to which we provide a link your contract for the supply of those goods and services will be with that third party and in no way affiliated with us.
+7.  Reference to any product or service on the Service does not constitute an offer to sell or supply that product or service and does not mean that the product or service is available in all countries or that the name and description of any product in your country will be the same as that included on the Service.
+8.  We have taken every care in the preparation of the Service. However, as certain technical matters may be beyond our control, we cannot guarantee that you will have uninterrupted or error-free access to the Service at all times.
+9.  Some of the data accessible on our Service is the intellectual property of third parties. This data is protected by copyright and other relevant intellectual property laws and all ownership rights remain with the information service provider or the third party or us, as the case may be.
+10. We make no warranty that the contents of the Service are free from infection by viruses or anything else which has contaminating or destructive properties and shall have no liability in respect thereof.
+11. We reserve the right at any time, without liability for doing so, to modify or discontinue, temporarily or permanently, any of the content, functions or services we offer on the Service (or any part of them) with or without notice. This includes removing information transmitted by you to us.
+12. You agree that the information you provide us with when you use the Service will be true and complete and that you will keep it true and complete.
+13. You agree to defend, indemnify, and hold harmless LETSMOON, its officers, directors, shareholders, employees, independent contractors and agents, from and against any and all claims, actions or demands (including, without limitation, reasonable legal and accounting fees), resulting or allegedly resulting from a breach of any of the dispositions set forth in the Terms
+14. You agree to let LETSMOON use your email address to send you service-related notices, important informational emails, special offers, etc. You may unsubscribe from the emails by following the corresponding link included in the emails themselves.
+15. You accept responsibility for the confidentiality and use of any user name and email address that you may register for your access to and use of the Service. You are responsible for maintaining the confidentiality of the password and account and are fully responsible for all activities that occur under your password or account. You agree to (a) immediately notify us of any unauthorized use of your password or account or any other breach of security, and (b) ensure that you exit from your account at the end of each session. We cannot and will not be liable for any loss or damage arising from your failure to comply.
+Use of the Service
+You agree not to use the services we provide via the Service to:
+1.  Transmit any information or do anything that is unlawful, harmful, threatening, abusive, harassing, tortious, defamatory, vulgar, obscene, libellous, invasive of another's privacy, hateful, or racially, ethnically or otherwise objectionable;
+2.  Impersonate any person or entity, or falsely state or otherwise misrepresent your affiliation with a person or entity;
+3.  Forge headers or otherwise manipulate identifiers in order to disguise the origin of any information transmitted through the Service;
+4.  Transmit any information that you do not have a right to transmit or which infringes another's rights;
+5.  Transmit any unsolicited or unauthorised promotion (including without limitation "junk mail", "spam", "chain letters" or "pyramid schemes");
+6.  Transmit any material that contains software viruses or any other computer code, files or programs designed to interrupt, damage, destroy or limit the functionality of any computer software or hardware or telecommunications equipment;
+7.  Interfere with or disrupt the Service or servers or networks connected to the Service, or disobey any requirements, procedures, policies or regulations of networks connected to the Service; or collect or store personal data about other users.
+Eligibility
+1.  The Services are intended solely for users who are 18 or older and who satisfy the criteria described in these Terms. You represent and warrant that you: (a) are of legal age to form a binding contract in your jurisdiction; (b) have not previously been suspended or removed from using the Service; and (c) have full power and authority to agree to these Terms.
+
+Disclaimer
+The information provided on the Service and accompanying material is for informational purposes only. It should not be considered as any form of professional advice.
+
+
+There has been no due diligence done by LETSMOON to ascertain whether any tokens, currencies, or information listed on the Service are or relate to securities. The legal status of cryptocurrencies, tokens, and digital assets remains uncertain in many countries and jurisdictions around the world. We take no formal position on the legal status of any cryptocurrencies, tokens, and digital assets. It is your responsibility to undertake your own investigations and enquiries, and to satisfy yourself in that regard.
+
+
+The cryptocurrencies, tokens, and digital assets which may be displayed on the Service:
+1.  may be intended to be acquired or used for speculation or investment purposes; and
+2.  may give the holder a right to own, or participate in, the assets or profits of a person, entity, fund or scheme
+Cryptocurrencies, tokens, and digital assets with such characteristics may be legally prohibited in certain countries or jurisdictions, or be subject to specific restrictions and limitations with which you are solely responsible for complying at your own risk and expense.
+
+
+Any information such as events, price data, signals or other information contained on the Service are provided as general market information for educational and entertainment purposes only, and do not constitute professional advice. The Service should not be relied upon as a substitute for extensive independent market research before making any decisions. Market data, or any other content is subject to change at any time without notice. Any descriptions of "support", "resistance", "indicator" or any other similar terminology should not be seen as a recommendation. LETSMOON will not accept liability for any loss or damage, including without limitation any loss of profit, which may arise directly or indirectly from use of or reliance on such information. We cannot guarantee the timeliness or accuracy of any information provided on the Service.
+
+
+Trading in cryptocurrencies requires good knowledge of cryptocurrency markets, trading techniques and strategies. In addition to normal market risks, you may experience losses due to system failures. Trading generally is not appropriate for someone with limited resources and limited investment or trading experience and low risk tolerance.
+
+
+You should be aware and seriously consider that past performance is not necessarily indicative of future results.
+Termination
+You agree that LETSMOON may, without prior notice, immediately terminate, limit your access to or suspend your account, any associated email address, and access to the Service. Cause for such termination, limitation of access or suspension shall include, but not be limited to:
+1.  breaches or violations of the Terms or other incorporated agreements or guidelines,
+2.  requests by law enforcement or other government agencies,
+3.  discontinuance or material modification to the Service (or any part thereof),
+4.  unexpected technical or security issues or problems,
+5.  extended periods of inactivity,
+6.  and/or engagement by you in fraudulent or illegal activities.
+Further, you agree that all terminations, limitations of access and suspensions for cause shall be made in LETSMOON's sole discretion and that LETSMOON shall not be liable to you or any third party for any termination of your account, any associated email address, or access to the Service.
+Amendment of the Terms of service
+We reserve the right to amend the Terms without notice to you from time to time. Any such amendment shall be effective once the revised terms have been posted on the Service.
+
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+        <button type="button" class="btn btn-success" id="iaccept">Accept</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script type='text/javascript' src='/public/js/particles.js'></script>
+
+<script>
+
+particlesJS('particles-js',
+      {
+      "particles": {
+        "number": {
+          "value": 250,
+          "density": {
+            "enable": true,
+            "value_area": 800
+          }
+        },
+        "color": {
+          "value": "#ffffff"
+        },
+        "shape": {
+          "type": "circle",
+          "stroke": {
+            "width": 0,
+            "color": "#000000"
+          },
+          "polygon": {
+            "nb_sides": 5
+          },
+          "image": {
+            "src": "img/github.svg",
+            "width": 100,
+            "height": 100
+          }
+        },
+        "opacity": {
+          "value": 1,
+          "random": true,
+          "anim": {
+            "enable": true,
+            "speed": 1,
+            "opacity_min": 0,
+            "sync": false
+          }
+        },
+        "size": {
+          "value": 3,
+          "random": true,
+          "anim": {
+            "enable": false,
+            "speed": 4,
+            "size_min": 0.3,
+            "sync": false
+          }
+        },
+        "line_linked": {
+          "enable": false,
+          "distance": 150,
+          "color": "#ffffff",
+          "opacity": 0.4,
+          "width": 1
+        },
+        "move": {
+          "enable": true,
+          "speed": 1,
+          "direction": "none",
+          "random": true,
+          "straight": false,
+          "out_mode": "out",
+          "bounce": false,
+          "attract": {
+            "enable": false,
+            "rotateX": 600,
+            "rotateY": 600
+          }
+        }
+      },
+      "interactivity": {
+        "detect_on": "canvas",
+        "events": {
+          "onhover": {
+            "enable": true,
+            "mode": "bubble"
+          },
+          "onclick": {
+            "enable": true,
+            "mode": "repulse"
+          },
+          "resize": true
+        },
+        "modes": {
+          "grab": {
+            "distance": 400,
+            "line_linked": {
+              "opacity": 1
+            }
+          },
+          "bubble": {
+            "distance": 25,
+            "size": 0,
+            "duration": 2,
+            "opacity": 0,
+            "speed": 3
+          },
+          "repulse": {
+            "distance": 100,
+            "duration": 0.4
+          },
+          "push": {
+            "particles_nb": 4
+          },
+          "remove": {
+            "particles_nb": 2
+          }
+        }
+      },
+      "retina_detect": true
+    }
+);
+
+    $( document ).ready(function() {
+
+        if (window.location.hash == "#s") {
+            $('#nav-signup-tab').tab('show')            
+        }
+
+    });
+ 
+
+  $(function () {
+    $('body').on('click', '#signupbtn', function (e) {
+        e.preventDefault();
+        $('#termsModalLong').modal('show');
+
+    });
+  });
+
+  $(function () {
+    $('body').on('click', '#iaccept', function (e) {
+
+        $('#signupform').submit();
+        $('#termsModalLong').modal('hide');
+
+    });
+  });
+
+</script>    
+
+<% include analytics %> 
+
+</body>
+</html>

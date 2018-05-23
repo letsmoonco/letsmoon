@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="en">
+
+<% include header %> 
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light nvb">
+  <a class="navbar-brand" href="/dashboard"><img class="logo" src="/public/img/rocket.svg"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">Dashboard <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://quickmarketcap.com" target="_blank">Market Cap</a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" href="http://news.quickmarketcap.com" target="_blank">News</a>
+      </li>            
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button type="button" class="btn btn-secondary whitelink" data-toggle="modal" data-target="#feedbackModal"><i class="fa fa-bullhorn"></i> Feedback</button>
+      <a href="/logout" class="btn btn-secondary whitelink left-pad" role="button"><i class="fa fa-sign-out"></i> Logout</a>
+    </form>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="top-pad3 divit">
+    <div class="pull-right right-pad2">
+      <a href="https://t.me/joinchat/AAAAAEiuI2XJJ8JeV1tgaA" target="_blank">Join us on Telegram<img class="tele left-pad2" src="/public/img/icon-telegram-smaller.svg"></a>
+    </div>    
+    <div class="pull-left">
+      <a href="/dashboard" class="btn btn-secondary whitelink left-pad" role="button">Back</a>
+    </div>
+    <div class="page-header text-center p1">
+        <h1>Trading on <%= data.exchange %>: <%= market %> </h1>
+    </div>
+    <% if (message.length > 0) { %>
+        <div class="p1">
+        </div>            
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+
+    <div class="row p1">
+        <div class="col-sm-8">
+          <!-- TradingView Widget BEGIN -->
+          <div class="tradingview-widget-container">
+            <div id="tradingview_e3b3a"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+            <script type="text/javascript">
+            new TradingView.widget(
+            {
+            "height": 500,
+            "width": "auto",
+            "symbol": "<%= data.exchange %>:<%= ticker %>",
+            "interval": "60",
+            "timezone": "Etc/UTC",
+            "theme": "Light",
+            "style": "1",
+            "locale": "en",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "save_image": false,
+            "container_id": "tradingview_e3b3a"
+          }
+            );
+            </script>
+          </div>
+          <!-- TradingView Widget END -->          
+        </div>
+        <div class="col-sm-4">
+          <% 
+
+              var isactive = data.conditions.active.toString(); 
+              isactive = isactive.toUpperCase(); 
+              var tradepairs = market.split("-");
+
+          %>
+
+          <h3><%= tradepairs[0] %> Balance: <%= balances.base %></h3>
+          <h3><%= tradepairs[1] %> Balance: <%= balances.pair %></h3>
+          <h3>Rule Active: <%= isactive %></h3>
+          <h3>Rule State: <%= data.conditions.state %></h3>
+          <div class="alert alert-danger top-pad2">
+            <h2>WARNING</h2>
+            <p>There will only ever be one open order on this pair at a time.</p>
+            <p>Remember there may be a buy/sell spread around the price.</p>
+            <p>It might be worth while setting buys/sells slightly lower than the price.</p>
+            <p></p>
+          </div>          
+        </div>        
+    </div>
+    <div class="row p1">
+        <div class="col-sm-12">
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#thelog" aria-expanded="false" aria-controls="thelog">
+            Show Log
+          </button>
+        <div class="collapse top-pad3" id="thelog">
+          <div class="card card-body">
+            <!--
+            <div class="card-header">
+              Log History (Latest First)
+            </div>
+            -->
+            <ul class="list-group list-group-flush">
+              <% if (data.conditions.log != null) { %>
+                <% for (var ix2 in data.conditions.log) { %>
+                  <li class="list-group-item"><p class="text-left"><span class="darker"><%= data.conditions.log[ix2].message %></span> <span style="/*float: right;*/ margin-left: 20px; font-size: 12px;"><%= moment(data.conditions.log[ix2].timestamp).fromNow() %></span></p></li>
+                <% } %>                
+              <% } else { %>
+                <li class="list-group-item">No Log Entries</li>
+              <% } %>
+
+            </ul>            
+          </div>
+        </div>          
+        </div>
+    </div>
+
+
+    <div class="row p1">
+        <div class="col-sm-12">
+
+          <h3><span class="fa fa-cog"></span> Rules</h3>
+          </br>
+          <div class="btm-pad">
+            <div class="pull-left">
+              <button type="button" class="btn btn-primary" onClick="window.location.reload()"><i class="fa fa-undo"></i> Undo Changes</button>
+              <button id="btnsaverules" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save Changes</button>
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#resetitModal" data-tid="<%= data.tid %>" data-mark="<%= data.market %>"><i class="fa fa-refresh"></i> Reset To Mode 1</button>
+            </div>
+            <% if (data.conditions.active) { %>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#stopitModal" data-tid="<%= data.tid %>" data-mark="<%= data.market %>"><i class="fa fa-stop"></i> Deactivate</button>                  
+            <% } else { %>
+              <button type="button" class="btn btn-success" data-toggle="modal" data-target="#startitModal" data-tid="<%= data.tid %>" data-mark="<%= data.market %>"><i class="fa fa-play"></i> Activate</button>
+            <% } %>
+            <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteitModal" data-tid="<%= data.tid %>" data-mark="<%= data.market %>"><i class="fa fa-trash"></i> Delete Trade</button>      
+          </div>
+          </br>          
+          <form id="therules" action="/saverules" method="POST">
+            <input type="hidden" class="form-control" name="tidrules" id="tidrules" value="<%= tid %>">
+            <input type="hidden" class="form-control" name="tidstart" id="tidstart" value="0">
+            <table id="rulestable" class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="setleft tabletitle">When Mode <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Execute the rule only in this mode"></i></th>
+                  <th scope="col" class="setleft tabletitle">Rule Type <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Currently only triggered by price, more coming soon :)"></i></th>
+                  <th scope="col" class="setleft tabletitle">Operator <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="What condition are we checking for?"></i></th>
+                  <th scope="col" class="setleft tabletitle">Price Target <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Trigger the rule at this price"></i></th>
+                  <th scope="col" class="setleft tabletitle">Action <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Currently supporting limit buy & sell only, more coming soon :)"></i></th>
+                  <th scope="col" class="setleft tabletitle">Order Price <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Price to place the order at"></i></th>
+                  <th scope="col" class="setleft tabletitle">Quantity <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="How many to buy / sell"></i></th>
+                  <th scope="col" class="setleft tabletitle">Set Mode To <i class="fa fa-info-circle finfo" data-toggle="tooltip" data-placement="top" title="Change the mode, useful for multiple targets"></i></th>
+                  <th scope="col" class="setleft tabletitle"><button type="button" class="btn btn-success newrule"><i class="fa fa-plus"></i></button></th>
+                </tr>
+              </thead>
+              <tbody id="rulestablebody">
+                <% for (var i in data.conditions.rules) { %>
+                   <tr>
+                     <td class="setleft tabletitle">
+                      <%# data.conditions.rules[i].statecheck %>
+                      <select class="form-control" name="whenmode" id="whenmode">
+                         <option
+                           <% if (data.conditions.rules[i].statecheck == "Mode 1") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 1</option>
+                         <option
+                           <% if (data.conditions.rules[i].statecheck == "Mode 2") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 2</option>
+                         <option
+                           <% if (data.conditions.rules[i].statecheck == "Mode 3") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 3</option>           
+                         <option
+                           <% if (data.conditions.rules[i].statecheck == "Mode 4") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 4</option>  
+                         <option
+                           <% if (data.conditions.rules[i].statecheck == "Mode 5") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 5</option>                                                                     
+                      </select>                   
+                     </td>
+                     <td class="setleft tabletitle">
+                      <select class="form-control" name="ruletype" id="ruletype">
+                         <option
+                           <% if (data.conditions.rules[i].type == "Price") { %>
+                              selected="selected"
+                           <% } %>
+                          >Price</option>                         
+                      </select>                   
+                     </td>
+                     <td class="setleft tabletitle">
+                      <select class="form-control" name="priceop" id="priceop">
+                         <option
+                           <% if (data.conditions.rules[i].priceop == ">=") { %>
+                              selected="selected"
+                           <% } %>
+                          >>=</option>                         
+                         <option
+                           <% if (data.conditions.rules[i].priceop == "<=") { %>
+                              selected="selected"
+                           <% } %>
+                          ><=</option>                                                   
+                      </select>                   
+                     </td>
+                     <td style="max-width: 170px;" class="setleft tabletitle">
+                      <input type="number" min="0" step="0.00000001" class="form-control" name="pricecheck" id="pricecheck" value="<%= data.conditions.rules[i].price %>">
+                     </td>
+                     <td class="setleft tabletitle">
+                      <select class="form-control" name="action" id="action">
+                         <option
+                           <% if (data.conditions.rules[i].action == "Buy") { %>
+                              selected="selected"
+                           <% } %>
+                          >Buy</option>  
+                         <option
+                           <% if (data.conditions.rules[i].action == "Sell") { %>
+                              selected="selected"
+                           <% } %>
+                          >Sell</option>        
+                         <option
+                           <% if (data.conditions.rules[i].action == "None") { %>
+                              selected="selected"
+                           <% } %>
+                          >None</option>                                                
+                      </select>                   
+                     </td>
+                     <td style="max-width: 170px;" class="setleft tabletitle">
+                      <input type="number" min="0" step="0.00000001" class="form-control actprice" name="actprice" id="actprice" value="<%= data.conditions.rules[i].actionprice %>">
+                     </td>                 
+                     <td style="max-width: 170px;" class="setleft tabletitle">
+                      <input type="number" min="0" step="1" class="form-control" name="qty" id="qty" value="<%= data.conditions.rules[i].qty %>">
+                     </td>
+                     <td class="setleft tabletitle">
+                      <select class="form-control" name="setmode" id="setmode">
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Finish") { %>
+                              selected="selected"
+                           <% } %>
+                          >Finish</option>  
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Mode 1") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 1</option>  
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Mode 2") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 2</option>  
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Mode 3") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 3</option>      
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Mode 4") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 4</option>  
+                         <option
+                           <% if (data.conditions.rules[i].stateset == "Mode 5") { %>
+                              selected="selected"
+                           <% } %>
+                          >Mode 5</option>
+                      </select>                   
+                     </td>
+                     <td class="setleft tabletitle"><button type="button" class="btn btn-danger delrule" ><i class="fa fa-trash"></i></button></td>                 
+                   </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </form>
+        </div>
+    </div>
+    <div class="btm-pad-big"></div>
+  </div>
+</div>  
+
+<div class="btm-pad-big"></div>
+
+<div class="modal fade" id="deleteitModal" tabindex="-1" role="dialog" aria-labelledby="deleteitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title darker" id="deleteitModalCenterTitle">Delete Trade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="deleteitForm" action="/deleteit" method="POST">
+          <div class="form-group">
+            <label for="marktodelete" class="col-form-label darker">Market:</label>
+            <input type="text" class="form-control" name="marktodelete" id="marktodelete" readonly>
+          </div>          
+          <input type="hidden" class="form-control" name="tidtodelete" id="tidtodelete" readonly>
+        </form>
+        </br>
+        <p>Note: This will delete associated orders.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger deleteit-submit">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="resetitModal" tabindex="-1" role="dialog" aria-labelledby="resetitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title darker" id="resetitModalCenterTitle">Reset Trade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="resetitForm" action="/resetmode" method="POST">
+          <p class="darker">This will reset your trade's state back to Mode 1</p>          
+          <input type="hidden" class="form-control" name="tidtoreset" id="tidtoreset" readonly>
+        </form>
+        </br>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger resetit-submit">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="startitModal" tabindex="-1" role="dialog" aria-labelledby="startitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title darker" id="startitModalCenterTitle">Activate Trading</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+          <p class="darker">This will save the current rules to the rules engine and begin trading on your behalf.</p>    
+          <p class="darker">Please make sure you have double checked your logic and all decimal places.</p>        
+        </br>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success startit-submit">Activate</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="stopitModal" tabindex="-1" role="dialog" aria-labelledby="stopitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title darker" id="stopitModalCenterTitle">Deactivate Trading</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="stopitForm" action="/stoptrade" method="POST">
+          <p class="darker">This will pause the trade and maintain it's current state.</p>          
+          <input type="hidden" class="form-control" name="tidtostop" id="tidtostop" readonly>
+        </form>
+        </br>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success stopit-submit">Deactivate</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<% include feedback %> 
+
+<script>
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
+$(document).on("click",".delrule", function (event) {
+  
+    var rowCount = $('#rulestable >tbody >tr').length;
+    if (rowCount > 1) {
+      $(this).closest('tr').remove();
+    }
+
+  });
+
+$(document).on("click",".newrule", function (event) {
+  
+    var $tableBody = $('#rulestable').find("tbody"),
+    $trLast = $tableBody.find("tr:last"),
+    $trNew = $trLast.clone();
+
+    $trLast.after($trNew);
+
+  });
+
+
+$('#btnsaverules').on('click', function (event) {
+      $('#therules').submit();
+    
+  });
+
+$(document).on("change","#pricecheck", function (event) {
+  
+    $(this).closest('tr').find('td').eq(5).find('.actprice').val($(this).val())
+
+  });
+
+  $(function () {
+    $('body').on('click', '.deleteit-submit', function (e) {
+
+        $('#deleteitForm').submit();
+        $('#deleteitModal').modal('hide');
+
+    });
+  });
+
+  $('#deleteitModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tid = button.data('tid') // Extract info from data-* attributes
+    var mark = button.data('mark') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#tidtodelete').val(tid)
+    modal.find('#marktodelete').val(mark)
+    
+  })  
+
+  $(function () {
+    $('body').on('click', '.resetit-submit', function (e) {
+
+        $('#resetitForm').submit();
+        $('#resetitModal').modal('hide');
+
+    });
+  });
+
+  $('#resetitModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tid = button.data('tid') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#tidtoreset').val(tid)
+    
+  })  
+
+  $(function () {
+    $('body').on('click', '.startit-submit', function (e) {
+        $('#tidstart').val("1");
+        $('#therules').submit();        
+        $('#startitModal').modal('hide');
+
+    });
+  });
+
+  $('#startitModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tid = button.data('tid') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#tidtostart').val(tid)
+    
+  })  
+
+  $(function () {
+    $('body').on('click', '.stopit-submit', function (e) {
+
+        $('#stopitForm').submit();
+        $('#stopitModal').modal('hide');
+
+    });
+  });
+
+  $('#stopitModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tid = button.data('tid') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#tidtostop').val(tid)
+    
+  })    
+
+</script>  
+
+<% include analytics %> 
+
+</body>
+</html>

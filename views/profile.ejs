@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+
+<% include header %> 
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light nvb">
+  <a class="navbar-brand" href="/dashboard"><img class="logo" src="/public/img/rocket.svg"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/profile">Profile <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://quickmarketcap.com" target="_blank">Market Cap</a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" href="http://news.quickmarketcap.com" target="_blank">News</a>
+      </li>            
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button type="button" class="btn btn-secondary whitelink" data-toggle="modal" data-target="#feedbackModal"><i class="fa fa-bullhorn"></i> Feedback</button>
+      <a href="/logout" class="btn btn-secondary whitelink left-pad" role="button"><i class="fa fa-sign-out"></i> Logout</a>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="top-pad3 divit">
+    <div class="page-header text-center">
+        <h1><span class="fa fa-user"></span> My Profile</h1>
+    </div>
+    <% if (message.length > 0) { %>
+        <div class="top-pad">
+        </div>            
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+    <div class="row justify-content-center top-pad">
+        <div class="col-sm-6">
+
+                  <% if (user.local.email) { %>
+
+                      <form action="/createmykeys" method="post" id="rndform">
+                          <h3>Bittrex API Keys</h3>
+                          <div class="form-group top-pad3">
+                              <label>API Key</label>
+                              <input type="text" class="form-control" name="bittrexapikey" id="bittrexapikey" value="<%= user.local.bittrex.apikey %>">
+                          </div>
+                          <div class="form-group top-pad3">
+                              <label>API Secret</label>
+                              <input type="text" class="form-control" name="bittrexapisecret" id="bittrexapisecret" value="<%= user.local.bittrex.apisecret %>">                    
+                          </div>
+                          <h3>Binance API Keys</h3>
+                          <div class="form-group top-pad3">
+                              <label>API Key</label>
+                              <input type="text" class="form-control" name="binanceapikey" id="binanceapikey" value="<%= user.local.binance.apikey %>">
+                          </div>
+                          <div class="form-group top-pad3">
+                              <label>API Secret</label>
+                              <input type="text" class="form-control" name="binanceapisecret" id="binanceapisecret" value="<%= user.local.binance.apisecret %>">                    
+                          </div>                          
+                          <button type="submit" class="btn btn-success" id="updatekeysbtn">Update</button>
+                      </form>
+                      
+                  <% } else { %>
+                      <a href="/unlink/local" class="btn btn-secondary whitelink">Unlink</a>
+                      <a href="/connect/local" class="btn btn-secondary whitelink">Connect Local</a>
+                  <% } %>
+
+        </div>
+    </div>
+    <div class="row justify-content-center top-pad">
+        <div class="col-sm-8">
+          <div class="alert alert-danger">NEVER enable withdrawals on your API keys, unless you have a specific need to.  We only need READ and TRADE permissions.</div>
+        </div>
+    </div>      
+    <div class="row justify-content-center top-pad">
+        <div class="col-sm-12">
+          <h2>Why do we need your API keys?</h2>
+          <p class="top-pad2">In order to place orders on the exchanges on your behalf, we need to be able to securely communicate and authenticate you with the exchange.  You can revoke the key's permissions at any point by logging into the exchange and accessing the API settings.</p>
+
+          <h2 class="top-pad2">Bittrex - Recommended Settings</h2>
+          <div class="shadow-lg p-4 mb-4 bg-white">
+            <img class="img-fluid top-pad2 border border-light rounded" src="/public/img/bittrexkeys.png">
+          </div>
+          <h2 class="top-pad2">Binance - Recommended Settings</h2>
+          <div class="shadow-lg p-4 mb-4 bg-white">
+            <img class="img-fluid top-pad2 border border-light rounded" src="/public/img/binancekeys.png">
+          </div>
+        </div>
+    </div>    
+  </div>
+</div>
+<div class="btm-pad-big"></div>  
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<% include feedback %> 
+
+<% include analytics %> 
+
+</body>
+</html>

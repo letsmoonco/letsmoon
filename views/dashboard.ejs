@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<% include header %> 
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light nvb">
+  <a class="navbar-brand" href="/dashboard"><img class="logo" src="/public/img/rocket.svg"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">Dashboard <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://quickmarketcap.com" target="_blank">Market Cap</a>
+      </li>      
+      <li class="nav-item">
+        <a class="nav-link" href="http://news.quickmarketcap.com" target="_blank">News</a>
+      </li>      
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button type="button" class="btn btn-secondary whitelink" data-toggle="modal" data-target="#feedbackModal"><i class="fa fa-bullhorn"></i> Feedback</button>
+      <a href="/logout" class="btn btn-secondary whitelink left-pad" role="button"><i class="fa fa-sign-out"></i> Logout</a>
+    </form>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="top-pad3 divit">
+
+    <div class="pull-right right-pad2">
+      <a href="https://t.me/joinchat/AAAAAEiuI2XJJ8JeV1tgaA" target="_blank">Join us on Telegram<img class="tele left-pad2" src="/public/img/icon-telegram-smaller.svg"></a>
+    </div>
+
+    <div class="page-header text-center p1">
+        <h1><span class="fa fa-line-chart"></span> Trades</h1>
+        <p>The trading engine checks prices every 30 seconds.  It may not be suitable for some trading styles e.g. high frequency trading/scapling</p>
+    </div>
+    <% if (message.length > 0) { %>
+        <div class="p1">
+        </div>            
+        <div class="alert alert-danger"><%= message %></div>
+    <% } %>
+
+    <div class="row justify-content-center p1">
+        <div class="col-sm-6">
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newtradebittrexModal"><i class="fa fa-plus"></i> New Trade on Bittrex</button> <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newtradebinanceModal"><i class="fa fa-plus"></i> New Trade on Binance</button>            
+        </div>
+    </div>
+    <% if (trades.length > 0) { %>
+      <div class="container">
+        <div class="groove">
+          <div class="row p1">
+              <div class="col-md-12">
+                </br>
+                <table id="docstable" class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="setleft tabletitle">Exchange</th>
+                      <th scope="col" class="setleft tabletitle">Market</th>
+                      <th scope="col" class="setleft tabletitle">Last Modified</th>
+                      <th scope="col" class="setleft tabletitle">Active</th>
+                      <th scope="col" class="setleft tabletitle">Actions</th>
+                    </tr>
+                  </thead>
+                    <tbody id="docstablebody">
+                    <% for (var i in trades) { %>
+                    <% var ji = trades.length - i - 1;
+                       var isactive = trades[ji].conditions.active.toString(); 
+                       isactive = isactive.toUpperCase(); 
+                     %>
+                       <tr>
+                         <td class="setleft tabletitle"><%= trades[ji].exchange %></td>
+                         <td class="setleft tabletitle"><%= trades[ji].market %></td>
+                         <td class="setleft tabletitle"><%= moment(trades[ji].timestamp).fromNow() %></td>
+                         <td class="setleft tabletitle"><%= isactive %></td>
+                         <td class="setleft tabletitle"><a href="/trade/<%= trades[ji].tid %>" class="btn btn-primary whitelink" role="button"><i class="fa fa-cog"></i></a> <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteitModal" data-tid="<%= trades[ji].tid %>" data-mark="<%= trades[ji].market %>"><i class="fa fa-trash"></i></button></td>                 
+
+                       </tr>
+                    <% } %>
+                    </tbody>
+                </table>                
+
+              </div>
+          </div>
+        </div>
+      </div>
+    <% } else { %>
+
+    <% } %>
+    <div class="btm-pad-big"></div>  
+  </div>
+
+</div>
+
+<div class="modal fade" id="newtradebittrexModal" tabindex="-1" role="dialog" aria-labelledby="newtradebittrexModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newtradebittrexModalCenterTitle">New Trade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="bittrexnewtradeForm" action="/newtrade" method="POST">
+          <div class="form-group">
+            <label for="newtrademarket" class="col-form-label darker">Select Market</label>
+            <select class="form-control" name="newtrademarket" id="newtrademarket">
+            <% for (var i in bittrexMarkets) { %>
+               <option><%= bittrexMarkets[i].MarketName %></option>
+            <% } %>
+            </select>
+            <input type="hidden" value="BITTREX" id="newtradeexchange" name="newtradeexchange">            
+          </div>          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success bittrexnewtrade-submit">Go</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="newtradebinanceModal" tabindex="-1" role="dialog" aria-labelledby="newtradebinanceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="newtradebinanceModalCenterTitle">New Trade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="binancenewtradeForm" action="/newtrade" method="POST">
+          <div class="form-group">
+            <label for="newtrademarket" class="col-form-label darker">Select Market</label>
+            <select class="form-control" name="newtrademarket" id="newtrademarket">
+            <% for (var i in binanceMarkets) { %>
+               <option><%= binanceMarkets[i].MarketName %></option>
+            <% } %>
+            </select>
+            <input type="hidden" value="BINANCE" id="newtradeexchange" name="newtradeexchange">
+          </div>          
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success binancenewtrade-submit">Go</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<div class="modal fade" id="deleteitModal" tabindex="-1" role="dialog" aria-labelledby="deleteitModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteitModalCenterTitle">Delete Trade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>      
+      <div class="modal-body">
+        <form id="deleteitForm" action="/deleteit" method="POST">
+          <div class="form-group">
+            <label for="marktodelete" class="col-form-label darker">Market:</label>
+            <input type="text" class="form-control" name="marktodelete" id="marktodelete" readonly>
+          </div>          
+          <input type="hidden" class="form-control" name="tidtodelete" id="tidtodelete" readonly>
+        </form>
+        </br>
+        <p>Note: This will not delete associated orders.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger deleteit-submit">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>  
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<% include feedback %> 
+
+<script>
+
+
+
+  $(function () {
+    $('body').on('click', '.bittrexnewtrade-submit', function (e) {
+
+        $('#bittrexnewtradeForm').submit();
+        $('#bittrexnewtradeModal').modal('hide');
+
+    });
+  });
+
+  $(function () {
+    $('body').on('click', '.binancenewtrade-submit', function (e) {
+
+        $('#binancenewtradeForm').submit();
+        $('#binancenewtradeModal').modal('hide');
+
+    });
+  });
+
+  $(function () {
+    $('body').on('click', '.deleteit-submit', function (e) {
+
+        $('#deleteitForm').submit();
+        $('#deleteitModal').modal('hide');
+
+    });
+  });
+
+  $('#deleteitModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var tid = button.data('tid') // Extract info from data-* attributes
+    var mark = button.data('mark') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#tidtodelete').val(tid)
+    modal.find('#marktodelete').val(mark)
+    
+  })  
+
+</script>  
+
+<% include analytics %> 
+
+</body>
+</html>
