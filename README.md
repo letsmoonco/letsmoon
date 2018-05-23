@@ -2,7 +2,7 @@
 
 Let's Moon is an open source cryptocurrency trading engine which allows you to configure complex buy/sell target rules on the popular exchanges Bittrex and Binance (more exchanges coming soon).
 
- - Checkout the application at: https://letsmoon.co
+ - Checkout the application and roadmap at: https://letsmoon.co
  - Join the telegram at: https://t.me/letsmoonco
 
 You can use the live site or download your own local copy.  The 'secrets' and API keys for the live website are left "NONE" in the github repo for obvious reasons.
